@@ -9,6 +9,7 @@ import javax.persistence.Id;
 @Entity
 public class Book {
 
+	//TODO: Tenemos que empaquetar los test
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id = null;
