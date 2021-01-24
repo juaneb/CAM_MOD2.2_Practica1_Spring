@@ -3,10 +3,11 @@ package es.urjc.code.daw.library.unitTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.urjc.code.daw.library.book.Book;
 import es.urjc.code.daw.library.book.BookService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean;
+
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,17 +15,17 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,6 +40,7 @@ public class BookRestControllerTest {
     private BookService bookService;
 
     @Test
+    @DisplayName("Prueba nombrado test")
     public void getBookTest() throws Exception {
         List<Book> books = Arrays.asList(new Book("Clean Code","Este libro mola todo"), new Book("Junit Patterns","Este libro te enseña los principios de los test unitarios"));
         when(bookService.findAll()).thenReturn(books);
@@ -87,6 +89,7 @@ public class BookRestControllerTest {
     @Test
     @WithMockUser(username = "admin", password = "pass", roles = "ADMIN")
     public void deleteBookTestWithRole() throws Exception {
+
         mvc.perform( MockMvcRequestBuilders.delete("/api/books/{id}", 1) )
                 .andExpect(status().isOk());
     }
