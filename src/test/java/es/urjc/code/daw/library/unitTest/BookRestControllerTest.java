@@ -58,9 +58,7 @@ public class BookRestControllerTest {
         //TODO Refactorizar nombre métodos test
 
         Book book = new Book("Clean Code","Este libro mola todo");
-        //when(bookService.save(book)).thenReturn(book);
         when(bookService.save(Mockito.any())).thenReturn(book);
-
         mvc.perform(MockMvcRequestBuilders
                 .post("/api/books/")
                 .content(asJsonString(book))
@@ -76,7 +74,6 @@ public class BookRestControllerTest {
         //TODO Refactorizar nombre métodos test
 
         Book book = new Book("Clean Code","Este libro mola todo");
-        //when(bookService.save(book)).thenReturn(book);
         when(bookService.save(Mockito.any())).thenReturn(book);
 
         mvc.perform(MockMvcRequestBuilders
@@ -84,6 +81,26 @@ public class BookRestControllerTest {
                 .content(asJsonString(book))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "pass", roles = "ADMIN")
+    public void deleteBookTestWithRole() throws Exception {
+        mvc.perform( MockMvcRequestBuilders.delete("/api/books/{id}", 1) )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "pass", roles = "USER")
+    public void deleteBookTestWithoutRole() throws Exception {
+        mvc.perform( MockMvcRequestBuilders.delete("/api/books/{id}", 1) )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void deleteBookTestWithoutAuth() throws Exception {
+        mvc.perform( MockMvcRequestBuilders.delete("/api/books/{id}", 1) )
                 .andExpect(status().isUnauthorized());
     }
 
