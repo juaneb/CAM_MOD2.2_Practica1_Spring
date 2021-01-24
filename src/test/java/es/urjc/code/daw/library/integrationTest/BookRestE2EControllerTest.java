@@ -8,6 +8,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -33,7 +34,19 @@ public class BookRestE2EControllerTest {
     }
 
     @Test
-    public void PostBookTest() throws JsonProcessingException {
+    @DisplayName("Test about get all books")
+    public void givenSomeBooksInTheBookServiceWhenCallGetServiceBooksThenReturnAllBooks() {
+        when().
+                get("/api/books/").
+                then().
+                statusCode(200).
+                body("title", hasItems("SUEÑOS DE ACERO Y NEON","LA VIDA SECRETA DE LA MENTE","CASI SIN QUERER","TERMINAMOS Y OTROS POEMAS SIN TERMINAR","LA LEGIÓN PERDIDA"));
+
+    }
+
+    @Test
+    @DisplayName("Test about post one book with user authentication")
+    public void givenOneNewBookInTheBookStoreWhenCallPostServiceBooksThenSuccessfulInsertBook() throws JsonProcessingException {
 
         Book book = new Book("Clean Code","Libro para los que se aburren");
         Response response = given().auth().basic("user","pass").contentType(ContentType.JSON).body(new ObjectMapper().writeValueAsString(book)).
@@ -55,7 +68,8 @@ public class BookRestE2EControllerTest {
     }
 
     @Test
-    public void DeleteBookTest() throws JsonProcessingException {
+    @DisplayName("Test about delete one book with user authentication and correct role")
+    public void givenOneBookInTheBookStoreWhenCallDeleteServiceBooksWithAuthThenSuccessfulDeleteBook() throws JsonProcessingException {
 
         Book book = new Book("Clean Code","Libro para los que se aburren");
         Response response = given().auth().basic("admin","pass").contentType(ContentType.JSON).body(new ObjectMapper().writeValueAsString(book)).
@@ -87,14 +101,6 @@ public class BookRestE2EControllerTest {
                 statusCode(404);
     }
 
-    @Test
-    public void getBookTest() {
-        when().
-                get("/api/books/").
-        then().
-                statusCode(200).
-                body("title", hasItems("SUEÑOS DE ACERO Y NEON","LA VIDA SECRETA DE LA MENTE","CASI SIN QUERER","TERMINAMOS Y OTROS POEMAS SIN TERMINAR","LA LEGIÓN PERDIDA"));
 
-    }
 
 }

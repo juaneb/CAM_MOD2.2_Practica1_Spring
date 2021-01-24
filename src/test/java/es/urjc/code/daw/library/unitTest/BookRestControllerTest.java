@@ -40,8 +40,8 @@ public class BookRestControllerTest {
     private BookService bookService;
 
     @Test
-    @DisplayName("Prueba nombrado test")
-    public void getBookTest() throws Exception {
+    @DisplayName("Test about get all books")
+    public void givenSomeBooksInTheBookServiceWhenCallGetServiceBooksThenReturnAllBooks() throws Exception {
         List<Book> books = Arrays.asList(new Book("Clean Code","Este libro mola todo"), new Book("Junit Patterns","Este libro te enseña los principios de los test unitarios"));
         when(bookService.findAll()).thenReturn(books);
 
@@ -55,9 +55,9 @@ public class BookRestControllerTest {
 
 
     @Test
+    @DisplayName("Test about post one book with user authentication")
     @WithMockUser(username = "user", password = "pass", roles = "USER")
-    public void postBookTest() throws Exception {
-        //TODO Refactorizar nombre métodos test
+    public void givenOneNewBookInTheBookStoreWhenCallPostServiceBooksThenSuccessfulInsertBook() throws Exception {
 
         Book book = new Book("Clean Code","Este libro mola todo");
         when(bookService.save(Mockito.any())).thenReturn(book);
@@ -72,7 +72,8 @@ public class BookRestControllerTest {
     }
 
     @Test
-    public void postBookTestWithoutAuth() throws Exception {
+    @DisplayName("Test about post one book without user authentication")
+    public void givenOneNewBookInTheBookStoreWhenCallPostServiceBooksWithoutAuthThenSuccessfulInsertBook() throws Exception {
         //TODO Refactorizar nombre métodos test
 
         Book book = new Book("Clean Code","Este libro mola todo");
@@ -87,22 +88,25 @@ public class BookRestControllerTest {
     }
 
     @Test
+    @DisplayName("Test about delete one book with user authentication and correct role")
     @WithMockUser(username = "admin", password = "pass", roles = "ADMIN")
-    public void deleteBookTestWithRole() throws Exception {
+    public void givenOneBookInTheBookStoreWhenCallDeleteServiceBooksWithAuthThenSuccessfulDeleteBook() throws Exception {
 
         mvc.perform( MockMvcRequestBuilders.delete("/api/books/{id}", 1) )
                 .andExpect(status().isOk());
     }
 
     @Test
+    @DisplayName("Test about delete one book with user authentication and wrong role")
     @WithMockUser(username = "admin", password = "pass", roles = "USER")
-    public void deleteBookTestWithoutRole() throws Exception {
+    public void givenOneBookInTheBookStoreWhenCallDeleteServiceBooksWithAuthAndWrongRoleThenAccessForbidden() throws Exception {
         mvc.perform( MockMvcRequestBuilders.delete("/api/books/{id}", 1) )
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    public void deleteBookTestWithoutAuth() throws Exception {
+    @DisplayName("Test about delete one book without user authentication")
+    public void givenOneBookInTheBookStoreWhenCallDeleteServiceBooksWithoutAuthThenAccessUnauthorized() throws Exception {
         mvc.perform( MockMvcRequestBuilders.delete("/api/books/{id}", 1) )
                 .andExpect(status().isUnauthorized());
     }
